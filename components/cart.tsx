@@ -15,13 +15,24 @@ interface CartProps {
 export default function Cart({ items, onRemove, onClose }: CartProps) {
   const [checkoutOpen, setCheckoutOpen] = useState(false)
 
-  const subtotal = items.reduce((sum, item) => sum + item.pixPrice, 0)
+  // Agrupa os itens para contar a quantidade de cada produto
+  const aggregatedItems = items.reduce((acc, item) => {
+    const existingItem = acc.find((i) => i.id === item.id)
+    if (existingItem) {
+      existingItem.quantity = (existingItem.quantity || 1) + 1
+    } else {
+      acc.push({ ...item, quantity: 1 })
+    }
+    return acc
+  }, [] as (Product & { quantity: number })[])
+
+  const subtotal = aggregatedItems.reduce((sum, item) => sum + item.pixPrice * item.quantity, 0)
   const total = subtotal
 
   if (checkoutOpen) {
     return (
       <Checkout
-        items={items}
+        items={aggregatedItems}
         total={total}
         onClose={() => {
           setCheckoutOpen(false)
@@ -47,7 +58,7 @@ export default function Cart({ items, onRemove, onClose }: CartProps) {
           <p className="text-center text-muted-foreground py-8">Seu carrinho está vazio</p>
         ) : (
           <div className="space-y-4">
-            {items.map((item, index) => (
+            {aggregatedItems.map((item, index) => (
               <div key={index} className="flex gap-3 pb-4 border-b border-border last:border-0">
                 <img
                   src={item.image || "/placeholder.svg"}
@@ -56,7 +67,12 @@ export default function Cart({ items, onRemove, onClose }: CartProps) {
                 />
                 <div className="flex-1">
                   <p className="font-semibold text-sm line-clamp-2">{item.name}</p>
-                  <p className="text-primary font-bold">R$ {(item.pixPrice / 100).toFixed(2).replace(".", ",")}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-primary font-bold">
+                      R$ {(item.pixPrice / 100).toFixed(2).replace(".", ",")}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Qtd: {item.quantity}</p>
+                  </div>
                 </div>
                 <button
                   onClick={() => onRemove(index)}
