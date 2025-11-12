@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { Product } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { X, Copy, Check } from "lucide-react"
@@ -27,17 +27,33 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
   const [zipCode, setZipCode] = useState("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
-  const [orderDetails, setOrderDetails] = useState({
-    nome: "",
-    endereco: "",
-    produtos: "",
-    total: 0,
-  })
 
   const FRETE = 1500; // R$ 15,00 em centavos
   const totalComFrete = total + FRETE;
 
   const PIX_KEY = "14991216580"
+
+  // Efeito para buscar o endereço quando o CEP mudar
+  useEffect(() => {
+    const fetchAddress = async () => {
+      if (zipCode.replace(/\D/g, "").length === 8) {
+        try {
+          const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+          const data = await response.json();
+          if (!data.erro) {
+            setStreet(data.logradouro);
+            setNeighborhood(data.bairro);
+            setCity(data.localidade);
+            setState(data.uf);
+          }
+        } catch (error) {
+          console.error("Erro ao buscar CEP:", error);
+        }
+      }
+    };
+    fetchAddress();
+  }, [zipCode]);
+
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -86,13 +102,6 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
         return
       }
 
-      // Salva os detalhes do pedido para usar no link do WhatsApp
-      setOrderDetails({
-        nome: customerName,
-        endereco: fullAddress,
-        produtos: productNames,
-        total: totalComFrete,
-      });
       setSuccess(true)
 
     } catch (err) {
@@ -110,7 +119,9 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
 
   if (success) {
     const vendedorWhatsApp = "5514991216580";
-    const mensagem = `*Novo Pedido Recebido!*\n\n*Cliente:* ${orderDetails.nome}\n\n*Endereço de Entrega:*\n${orderDetails.endereco}\n\n*Itens do Pedido:*\n${orderDetails.produtos}\n\n*Valor Total (com frete):* R$ ${(orderDetails.total / 100).toFixed(2).replace(".", ",")}\n\n*Pagamento via PIX* (Chave: ${PIX_KEY})`;
+    const fullAddress = `${street}, ${number}${complement ? `, ${complement}` : ""} - ${neighborhood}, ${city} - ${state}, ${zipCode}`;
+    const productNames = items.map((item) => `${item.name} (Qtd: ${item.quantity})`).join(", ");
+    const mensagem = `*Novo Pedido Recebido!*\n\n*Cliente:* ${customerName}\n\n*Endereço de Entrega:*\n${fullAddress}\n\n*Itens do Pedido:*\n${productNames}\n\n*Valor Total (com frete):* R$ ${(totalComFrete / 100).toFixed(2).replace(".", ",")}\n\n*Pagamento via PIX* (Chave: ${PIX_KEY})`;
     const whatsappUrl = `https://wa.me/${vendedorWhatsApp}?text=${encodeURIComponent(mensagem)}`;
 
     return (
