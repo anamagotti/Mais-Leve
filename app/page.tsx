@@ -63,42 +63,6 @@ const products: Product[] = [
     pixPrice: 14000,
   },
   {
-    id: "omega-detox-30",
-    name: "OMEGA 30 CÁPSULAS | VERSÃO DETOX",
-    price: 19000,
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagem%20do%20WhatsApp%20de%202025-11-11%20%C3%A0%28s%29%2013.57.19_55195033-1UwVYcPpWiMbTYnIK3HG8ZihVmE22A.jpg",
-    category: "Alpha Emagrecedor",
-    pixPrice: 19000,
-  },
-  {
-    id: "omega-detox-15",
-    name: "OMEGA 15 CÁPSULAS | VERSÃO DETOX",
-    price: 12000,
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagem%20do%20WhatsApp%20de%202025-11-11%20%C3%A0%28s%29%2013.57.19_55195033-1UwVYcPpWiMbTYnIK3HG8ZihVmE22A.jpg",
-    category: "Alpha Emagrecedor",
-    pixPrice: 12000,
-  },
-  {
-    id: "fox-multivitaminico",
-    name: "MULTIVITAMÍNICO FOX + ÔMEGA3 30 CÁPSULAS",
-    price: 4990,
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagem%20do%20WhatsApp%20de%202025-11-11%20%C3%A0%28s%29%2013.57.19_55195033-1UwVYcPpWiMbTYnIK3HG8ZihVmE22A.jpg",
-    category: "Alpha Emagrecedor",
-    pixPrice: 4990,
-  },
-  {
-    id: "bear-melatonina",
-    name: "MELATONINA BEAR 30 CÁPSULAS",
-    price: 3990,
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagem%20do%20WhatsApp%20de%202025-11-11%20%C3%A0%28s%29%2013.57.19_9c5f0ecd-GREZeBnESuwZiWRW8DVsKntu3djia1.jpg",
-    category: "Alpha Emagrecedor",
-    pixPrice: 3990,
-  },
-  {
     id: "2-capsulas-prata",
     name: "2 CÁPSULAS PRATA - POTE",
     price: 3000,
