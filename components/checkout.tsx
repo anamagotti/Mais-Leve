@@ -283,8 +283,8 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
           </div>
         </div>
 
-        {/* PIX Payment */}
-        <div className="bg-primary/5 border-2 border-primary rounded-lg p-4 space-y-4">
+        {/* PIX Payment - REMOVIDO DESTA TELA */}
+        {/* <div className="bg-primary/5 border-2 border-primary rounded-lg p-4 space-y-4">
           <p className="text-sm font-semibold">Chave PIX para Pagamento</p>
           <div className="bg-white border border-border rounded p-3 font-mono text-sm break-all font-bold">
             {PIX_KEY}
@@ -302,7 +302,7 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
               </>
             )}
           </Button>
-        </div>
+        </div> */}
 
         {error && <div className="p-3 bg-destructive/10 text-destructive rounded-lg text-sm">{error}</div>}
 
