@@ -27,6 +27,12 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
   const [zipCode, setZipCode] = useState("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
+  const [orderDetails, setOrderDetails] = useState({
+    nome: "",
+    endereco: "",
+    produtos: "",
+    total: 0,
+  })
 
   const FRETE = 1500; // R$ 15,00 em centavos
   const totalComFrete = total + FRETE;
@@ -80,8 +86,15 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
         return
       }
 
-      // Se a resposta for OK, mostramos a tela de sucesso do PIX
+      // Salva os detalhes do pedido para usar no link do WhatsApp
+      setOrderDetails({
+        nome: customerName,
+        endereco: fullAddress,
+        produtos: productNames,
+        total: totalComFrete,
+      });
       setSuccess(true)
+
     } catch (err) {
       setError("Erro ao conectar com o servidor.")
     } finally {
@@ -96,18 +109,41 @@ export default function Checkout({ items, total, onClose }: CheckoutProps) {
   }
 
   if (success) {
+    const vendedorWhatsApp = "5514991216580";
+    const mensagem = `*Novo Pedido Recebido!*\n\n*Cliente:* ${orderDetails.nome}\n\n*Endereço de Entrega:*\n${orderDetails.endereco}\n\n*Itens do Pedido:*\n${orderDetails.produtos}\n\n*Valor Total (com frete):* R$ ${(orderDetails.total / 100).toFixed(2).replace(".", ",")}\n\n*Pagamento via PIX* (Chave: ${PIX_KEY})`;
+    const whatsappUrl = `https://wa.me/${vendedorWhatsApp}?text=${encodeURIComponent(mensagem)}`;
+
     return (
       <div className="w-full max-w-md bg-white shadow-lg p-6 rounded-lg text-center space-y-4">
-        <h3 className="text-xl font-bold text-primary">PIX Gerado com Sucesso!</h3>
+        <h3 className="text-xl font-bold text-primary">Pedido Realizado!</h3>
         <p className="text-muted-foreground">
-          Chave PIX: <span className="font-mono font-bold">{PIX_KEY}</span>
+          Para concluir, pague o PIX abaixo e clique no botão para nos avisar no WhatsApp.
         </p>
-        <p className="text-sm text-muted-foreground">
-          Copie a chave e use no seu app de banco para completar o pagamento
-        </p>
-        <Button onClick={onClose} className="w-full bg-primary hover:bg-primary/90">
-          Fechar
-        </Button>
+        
+        {/* PIX Info */}
+        <div className="bg-primary/5 border-2 border-primary rounded-lg p-4 space-y-4">
+          <p className="text-sm font-semibold">Chave PIX para Pagamento</p>
+          <div className="bg-white border border-border rounded p-3 font-mono text-sm break-all font-bold">
+            {PIX_KEY}
+          </div>
+          <Button onClick={handleCopyPix} className="w-full gap-2 bg-primary/80 hover:bg-primary/90">
+            {pixCopied ? (
+              <><Check size={18} /> Copiado!</>
+            ) : (
+              <><Copy size={18} /> Copiar Chave PIX</>
+            )}
+          </Button>
+        </div>
+
+        {/* WhatsApp Button */}
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-600 transition-colors"
+        >
+          Avisar Vendedor no WhatsApp
+        </a>
       </div>
     )
   }
