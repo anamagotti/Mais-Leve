@@ -78,9 +78,10 @@ const products: Product[] = [
 		image:
 			"https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagem%20do%20WhatsApp%20de%202025-11-11%20%C3%A0%28s%29%2013.57.19_9c5f0ecd-GREZeBnESuwZiWRW8DVsKntu3djia1.jpg",
 		category: "Alpha Emagrecedor",
-    pixPrice: 3000,
-  },
-]export default function Home() {
+		pixPrice: 3000,
+	},
+]
+export default function Home() {
 	const [cartOpen, setCartOpen] = useState(false)
 	const [cartItems, setCartItems] = useState<Product[]>([])
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
